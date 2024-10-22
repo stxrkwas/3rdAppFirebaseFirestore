@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "97100965962",
+    "project_id": "rdappfirebase",
+    "storage_bucket": "rdappfirebase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:97100965962:android:6826ed9890a7139e10deb3",
+        "android_client_info": {
+          "package_name": "com.example.a3rdappfirebase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDo2TIQfcM6t-S4sesl2aQqaG9mKA6xO_g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
