@@ -114,45 +114,47 @@ fun App(db: FirebaseFirestore){
                 )
             )
         }
-    }
 
-    Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
-    // Caixa:
-    Box(
-        modifier = Modifier.fillMaxWidth(),
-        contentAlignment = Alignment.Center) {
+        // Caixa:
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center) {
 
-        // Imagem:
-        androidx.compose.foundation.Image(
-            painter = painterResource(id = R.drawable.malu),
-            modifier = Modifier
-                .size(200.dp)
-                .clip(CircleShape),
-            contentDescription = "Maria Luiza Passo Silva")
+            // Imagem:
+            androidx.compose.foundation.Image(
+                painter = painterResource(id = R.drawable.malu),
+                modifier = Modifier
+                    .size(200.dp)
+                    .clip(CircleShape),
+                contentDescription = "Maria Luiza Passo Silva")
 
-    }
+        }
 
-    // Linha 2:
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(20.dp)
-    ) {}
+        // Linha 2:
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+        ) {}
 
-    // Linha 3:
-    Row(Modifier.fillMaxWidth()){
+        // Linha 3:
+        Row(Modifier.fillMaxWidth()){
 
-        // Coluna 1:
-        Column{
-            TextField(
-                value = nome,
-                onValueChange = {nome = it},
-                label = {Text(text = "Nome:")},
-                placeholder = {Text(text = "Insira o seu nome")}
-            )
+            // Coluna 1:
+            Column(Modifier
+                .fillMaxWidth()
+                .padding(20.dp))
+            {
+                TextField(
+                    modifier = Modifier.fillMaxWidth(1f),
+                    value = nome,
+                    onValueChange = {nome = it},
+                    label = {Text(text = "Nome:")},
+                    placeholder = {Text(text = "Insira o seu nome")}
+                )
+            }
         }
     }
-
-
 }
