@@ -26,6 +26,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -93,7 +94,7 @@ fun App(db: FirebaseFirestore){
     var telefone by remember { mutableStateOf("") }
 
     // Variável que vai instanciar o banco de dados
-    val clientes = remember { mutableStateOf("") }
+    val clientes = remember { mutableStateOf<List<Cliente>>(emptyList()) }
 
     // Interface do app:
 
@@ -210,11 +211,12 @@ fun App(db: FirebaseFirestore){
             Button(
                 // Função que será executada ao clicar o botão:
                 onClick = {
-                    // Variável que vai armazenar os dados do cliente:
-                    val pessoas = hashMapOf("nome" to nome, "telefone" to telefone)
+
+                    // Variável que cria um objeto cliente, que armazena os dados inseridos:
+                    val cliente = Cliente(nome, telefone)
 
                     // Inserindo os dados no banco de dados:
-                    db.collection("Clientes").add(pessoas)
+                    db.collection("Clientes").add(cliente)
 
                         // Mensagem de sucesso:
                         .addOnSuccessListener { documentReference ->
@@ -225,49 +227,31 @@ fun App(db: FirebaseFirestore){
                                 "DocumentSnapshot added with ID: ${documentReference.id}"
                             )
 
-                            // Mensagem que informa o cliente cadastrado:
-                            Log.d(
-                                TAG,
-                                "Último cliente cadastrado: $clientes"
-                            )
+                            // Atualizando a lista de clientes após a inserção:
+                            LaunchedEffect(Unit) {
+                                db.collection("Clientes").get()
 
-                            // Mostrando os dados cadastrados no banco:
-                            db.collection("Clientes").get()
+                                    // Mensagem de sucesso:
+                                    .addOnSuccessListener { result->
 
-                                // Mensagem de sucesso:
-                                .addOnSuccessListener { result ->
+                                        // Limpa a lista de clientes antes de adicionar novos itens:
+                                        clientes = result.map { document ->
+                                            Cliente(
+                                                nome = document.getString("nome") ?: "--",
+                                                telefone = document.getString("telefone") ?: "--"
+                                            )
+                                        }
+                                    }
+                            }
 
-                                    // Limpando a lista de clientes:
-                                    clientes.clear()
-
-                                    // Estrutura de repetição para mostrar os dados cadastrados:
-                                    for(document in result){
-
-                                        // Variável que vai armazenar os dados do cliente:
-                                        val lista = hashMapOf(
-                                            "nome" to (document.getString("nome")?: "--"),
-                                            "telefone" to (document.getString("telefone")?: "--")
-                                        )
-
-                                        // Adicionando os dados do cliente na lista:
-                                        clientes.add(lista)
-
-                                        // Mostrando os dados cadastrados no banco:
-                                        Log.i(TAG, "Lista: $lista")
-
-                                    } //Finalizando estrutura de repetição
-                                }
-
-                                // Mensagem de erro:
-                                .addOnFailureListener { e ->
-                                    Log.w(TAG, "Error getting documents.", e)
-                                }
+                        // Limpando os campos de texto:
+                        nome = ""
+                        telefone = ""
                         }
 
-                        // Mensagem de erro:
                         .addOnFailureListener { e ->
-                            Log.w(TAG, "Error adding document", e)
-                        }
+                            Log.w(TAG, "Error adding document", e) }
+
                 }){
 
                 // Texto do botão:
@@ -277,57 +261,47 @@ fun App(db: FirebaseFirestore){
 
         // Listagem dos clientes cadastrados:
 
-        // Linha 1:
-        Row(
-            Modifier.fillMaxWidth()
-        ){
-
-            // Coluna 1:
-            Column(Modifier.fillMaxWidth()){
+            LazyColumn(modifier = Modifier.fillMaxWidth()) {
 
                 //
-                LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                item{
 
-                    //
-                    item{
+                    // Linha:
+                    Row(Modifier.fillMaxWidth()){
 
-                        // Linha:
-                        Row(Modifier.fillMaxWidth()){
+                        //Coluna 1:
+                        Column(modifier = Modifier.weight(0.5f)) {
 
-                            //Coluna 1:
-                            Column(modifier = Modifier.weight(0.5f)) {
+                            //Texto:
+                            Text(text = "Nome")
+                        }
 
-                                //Texto:
-                                Text(text = "Nome")
-                            }
+                        //Coluna 2:
+                        Column(modifier = Modifier.weight(0.5f)) {
 
-                            //Coluna 2:
-                            Column(modifier = Modifier.weight(0.5f)) {
-
-                                //Texto:
-                                Text(text = "Telefone")
-                            }
+                            //Texto:
+                            Text(text = "Telefone")
                         }
                     }
+                }
 
-                    items(clientes){ cliente ->
+                items(clientes){ cliente -> //Usa a lista de clientes atualizada
 
-                        // Linha:
-                        Row(modifier = Modifier.fillMaxWidth()){
+                    // Linha:
+                    Row(modifier = Modifier.fillMaxWidth()){
 
-                            //Coluna 1:
-                            Column(modifier = Modifier.weight(0.5f)) {
+                        //Coluna 1:
+                        Column(modifier = Modifier.weight(0.5f)) {
 
-                                //Texto:
-                                Text(text = cliente["nome"] ?: "--")
-                            }
+                            //Texto que acessa a propriedade nome do cliente:
+                            Text(text = cliente.nome)
+                        }
 
-                            // Coluna 2:
-                            Column(modifier = Modifier.weight(0.5f)) {
+                        // Coluna 2:
+                        Column(modifier = Modifier.weight(0.5f)) {
 
-                                //Texto:
-                                Text(text = cliente["telefone"] ?: "--")
-                            }
+                            //Texto que acessa a propriedade telefone do cliente:
+                            Text(text = cliente.telefone)
                         }
                     }
                 }
