@@ -322,12 +322,16 @@ fun App(db: FirebaseFirestore){
                                 Text(text = cliente["nome"] ?: "--")
                             }
 
+                            // Coluna 2:
+                            Column(modifier = Modifier.weight(0.5f)) {
+
+                                //Texto:
+                                Text(text = cliente["telefone"] ?: "--")
                             }
                         }
                     }
                 }
             }
         }
-
     } // Fim da coluna
 }
