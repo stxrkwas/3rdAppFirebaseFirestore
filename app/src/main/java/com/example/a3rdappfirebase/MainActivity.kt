@@ -1,7 +1,8 @@
 package com.example.a3rdappfirebase
 
-import android.media.Image
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -16,10 +17,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -32,6 +34,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,11 +43,10 @@ import com.example.a3rdappfirebase.ui.theme._3rdAppFirebaseTheme
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
-import java.time.format.TextStyle
 
 class MainActivity : ComponentActivity() {
 
-    val db = Firebase.firestore
+    private val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,7 +112,7 @@ fun App(db: FirebaseFirestore){
 
             // Texto:
             Text(text = "App FirebaseFirestore 2",
-                style = androidx.compose.ui.text.TextStyle(
+                style = TextStyle(
                     fontSize = 20.sp
                 )
             )
@@ -123,7 +126,7 @@ fun App(db: FirebaseFirestore){
             contentAlignment = Alignment.Center) {
 
             // Imagem:
-            androidx.compose.foundation.Image(
+            Image(
                 painter = painterResource(id = R.drawable.malu),
                 modifier = Modifier
                     .size(200.dp)
@@ -136,16 +139,23 @@ fun App(db: FirebaseFirestore){
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(20.dp)
-        ) {} //Fim da linha 2
+                .padding(20.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(text = "Maria Luiza Passo Silva \n3º DS A manhã",
+                style = TextStyle(
+                    // Centraliza o texto dentro do Text:
+                    textAlign = TextAlign.Center))
+        } //Fim da linha 2
 
         // Linha 3:
         Row(Modifier.fillMaxWidth()){
 
             // Coluna 1:
-            Column(Modifier
-                .fillMaxWidth()
-                .padding(20.dp))
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp))
             {
                 // Campo de texto
                 TextField(
@@ -162,14 +172,16 @@ fun App(db: FirebaseFirestore){
         } // Fim da linha 3
 
         // Linha 4:
-        Row(Modifier
-            .fillMaxWidth()
-            .padding(top = 20.dp)){
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 15.dp)){
 
             // Coluna 1:
-            Column(Modifier
-                .fillMaxWidth()
-                .padding(20.dp)){
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp)){
 
                 // Campo de texto
                 TextField(
@@ -185,6 +197,137 @@ fun App(db: FirebaseFirestore){
             }// Fim da coluna 1
 
         }// Fim da linha 4
+
+        // Linha 5:
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp),
+            horizontalArrangement = Arrangement.Center
+        ){
+
+            // Botão para cadastrar o cliente:
+            Button(
+                // Função que será executada ao clicar o botão:
+                onClick = {
+                    // Variável que vai armazenar os dados do cliente:
+                    val pessoas = hashMapOf("nome" to nome, "telefone" to telefone)
+
+                    // Inserindo os dados no banco de dados:
+                    db.collection("Clientes").add(pessoas)
+
+                        // Mensagem de sucesso:
+                        .addOnSuccessListener { documentReference ->
+
+                            // Limpando os campos de texto:
+                            Log.d(
+                                TAG,
+                                "DocumentSnapshot added with ID: ${documentReference.id}"
+                            )
+
+                            // Mensagem que informa o cliente cadastrado:
+                            Log.d(
+                                TAG,
+                                "Último cliente cadastrado: $clientes"
+                            )
+
+                            // Mostrando os dados cadastrados no banco:
+                            db.collection("Clientes").get()
+
+                                // Mensagem de sucesso:
+                                .addOnSuccessListener { result ->
+
+                                    // Limpando a lista de clientes:
+                                    clientes.clear()
+
+                                    // Estrutura de repetição para mostrar os dados cadastrados:
+                                    for(document in result){
+
+                                        // Variável que vai armazenar os dados do cliente:
+                                        val lista = hashMapOf(
+                                            "nome" to (document.getString("nome")?: "--"),
+                                            "telefone" to (document.getString("telefone")?: "--")
+                                        )
+
+                                        // Adicionando os dados do cliente na lista:
+                                        clientes.add(lista)
+
+                                        // Mostrando os dados cadastrados no banco:
+                                        Log.i(TAG, "Lista: $lista")
+
+                                    } //Finalizando estrutura de repetição
+                                }
+
+                                // Mensagem de erro:
+                                .addOnFailureListener { e ->
+                                    Log.w(TAG, "Error getting documents.", e)
+                                }
+                        }
+
+                        // Mensagem de erro:
+                        .addOnFailureListener { e ->
+                            Log.w(TAG, "Error adding document", e)
+                        }
+                }){
+
+                // Texto do botão:
+                Text(text = "Cadastrar")
+            }
+        }// Fim da linha 5
+
+        // Listagem dos clientes cadastrados:
+
+        // Linha 1:
+        Row(
+            Modifier.fillMaxWidth()
+        ){
+
+            // Coluna 1:
+            Column(Modifier.fillMaxWidth()){
+
+                //
+                LazyColumn(modifier = Modifier.fillMaxWidth()) {
+
+                    //
+                    item{
+
+                        // Linha:
+                        Row(Modifier.fillMaxWidth()){
+
+                            //Coluna 1:
+                            Column(modifier = Modifier.weight(0.5f)) {
+
+                                //Texto:
+                                Text(text = "Nome")
+                            }
+
+                            //Coluna 2:
+                            Column(modifier = Modifier.weight(0.5f)) {
+
+                                //Texto:
+                                Text(text = "Telefone")
+                            }
+                        }
+                    }
+
+                    items(clientes){ cliente ->
+
+                        // Linha:
+                        Row(modifier = Modifier.fillMaxWidth()){
+
+                            //Coluna 1:
+                            Column(modifier = Modifier.weight(0.5f)) {
+
+                                //Texto:
+                                Text(text = cliente["nome"] ?: "--")
+                            }
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
     } // Fim da coluna
 }
