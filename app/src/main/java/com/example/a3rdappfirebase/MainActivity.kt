@@ -113,7 +113,7 @@ fun App(db: FirebaseFirestore){
                     fontSize = 20.sp
                 )
             )
-        }
+        } // Fim da linha 1
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -130,14 +130,14 @@ fun App(db: FirebaseFirestore){
                     .clip(CircleShape),
                 contentDescription = "Maria Luiza Passo Silva")
 
-        }
+        } //Fim da caixa
 
         // Linha 2:
         Row(
             Modifier
                 .fillMaxWidth()
                 .padding(20.dp)
-        ) {}
+        ) {} //Fim da linha 2
 
         // Linha 3:
         Row(Modifier.fillMaxWidth()){
@@ -147,14 +147,44 @@ fun App(db: FirebaseFirestore){
                 .fillMaxWidth()
                 .padding(20.dp))
             {
+                // Campo de texto
                 TextField(
                     modifier = Modifier.fillMaxWidth(1f),
+                    //Valor do campo de texto
                     value = nome,
                     onValueChange = {nome = it},
+                    // Rótulo do campo de texto
                     label = {Text(text = "Nome:")},
+                    // Texto que aparece quando o campo estiver vazio
                     placeholder = {Text(text = "Insira o seu nome")}
                 )
             }
-        }
-    }
+        } // Fim da linha 3
+
+        // Linha 4:
+        Row(Modifier
+            .fillMaxWidth()
+            .padding(top = 20.dp)){
+
+            // Coluna 1:
+            Column(Modifier
+                .fillMaxWidth()
+                .padding(20.dp)){
+
+                // Campo de texto
+                TextField(
+                    modifier = Modifier.fillMaxWidth(1f),
+                    //Valor do campo de texto
+                    value = telefone,
+                    onValueChange = {telefone = it},
+                    // Rótulo do campo de texto
+                    label = {Text(text = "Telefone:")},
+                    // Texto que aparece quando o campo estiver vazio
+                    placeholder = {Text(text = "Insira o seu telefone")}
+                )
+            }// Fim da coluna 1
+
+        }// Fim da linha 4
+
+    } // Fim da coluna
 }
