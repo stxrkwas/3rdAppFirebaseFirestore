@@ -180,18 +180,24 @@ fun App(db: FirebaseFirestore){
             Column(
                 Modifier
                     .fillMaxWidth()
-                    .padding(top = 20.dp))
+                    .padding(20.dp))
             {
                 // Campo de texto
                 TextField(
                     modifier = Modifier.fillMaxWidth(1f),
+
                     //Valor do campo de texto
                     value = nome,
                     onValueChange = {nome = it},
+
                     // Rótulo do campo de texto
                     label = {Text(text = "Nome:")},
+
                     // Texto que aparece quando o campo estiver vazio
-                    placeholder = {Text(text = "Insira o seu nome")}
+                    placeholder = {Text(text = "Insira o seu nome")},
+
+                    // Permite que o campo de texto tenha apenas uma linha
+                    singleLine = true
                 )
             }
         } // Fim da linha 3
@@ -199,8 +205,7 @@ fun App(db: FirebaseFirestore){
         // Linha 4:
         Row(
             Modifier
-                .fillMaxWidth()
-                .padding(top = 15.dp)){
+                .fillMaxWidth()){
 
             // Coluna 1:
             Column(
@@ -211,13 +216,19 @@ fun App(db: FirebaseFirestore){
                 // Campo de texto
                 TextField(
                     modifier = Modifier.fillMaxWidth(1f),
+
                     //Valor do campo de texto
                     value = telefone,
                     onValueChange = {telefone = it},
+
                     // Rótulo do campo de texto
                     label = {Text(text = "Telefone:")},
+
                     // Texto que aparece quando o campo estiver vazio
-                    placeholder = {Text(text = "Insira o seu telefone")}
+                    placeholder = {Text(text = "Insira o seu telefone")},
+
+                    // Permite que o campo de texto tenha apenas uma linha
+                    singleLine = true
                 )
             }// Fim da coluna 1
 
@@ -227,7 +238,7 @@ fun App(db: FirebaseFirestore){
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(top = 20.dp),
+                .padding(bottom = 20.dp),
             horizontalArrangement = Arrangement.Center
         ){
 
